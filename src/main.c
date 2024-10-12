@@ -13,6 +13,10 @@ void print_board(const board *game_board)
     int row_index, element_count;
     int total_lines = game_board->total_lines; // Asegúrate de que `total_lines` esté definido en la estructura `board`
 
+    printf("\nTablero actual:\n");
+    printf("Turno del jugador %d\n", game_board->turno_jugador);
+
+    // Imprimir el tablero
     for (row_index = 0; row_index < total_lines; ++row_index)
     {
         element_count = game_board->lines[row_index];
@@ -35,27 +39,27 @@ int take(int row, int num, board *game_board)
     if (row < 1 || row > game_board->total_lines)
     {
         printf("Fila inválida. Introduzca una fila entre 1 y 4.\n");
-        return FAILURE; // Retorno indicando error en la fila
+        return false; // Retorno indicando error en la fila
     }
 
     // Comprobación si la fila tiene elementos
     if (game_board->lines[row - 1] == 0)
     {
         printf("Esa fila no tiene elementos disponibles.\n");
-        return FAILURE; // Retorno indicando que la fila está vacía
+        return false; // Retorno indicando que la fila está vacía
     }
 
     // Comprobación de la cantidad válida de elementos
     if (num < 1 || num > game_board->lines[row - 1])
     {
         printf("El número de elementos a tomar debe estar entre 1 y %d.\n", game_board->lines[row - 1]);
-        return FAILURE; // Retorno indicando error en el número de elementos
+        return false; // Retorno indicando error en el número de elementos
     }
 
     // Si pasa todas las validaciones, se resta el número de elementos de la fila
     game_board->lines[row - 1] -= num;
 
-    return SUCCESS; // Retorno indicando éxito
+    return true; // Retorno indicando éxito
 }
 
 int is_win(board *game_board)
@@ -67,7 +71,7 @@ int is_win(board *game_board)
     {
         // Si alguna línea tiene más de 1, no hay victoria
         if (game_board->lines[i] > 1)
-            return 0;
+            return false;
 
         // Si encontramos una línea con 1, verificamos que no haya otra ya encontrada
         if (game_board->lines[i] == 1)
@@ -76,15 +80,16 @@ int is_win(board *game_board)
             for (int j = i + 1; j < total_lines; ++j)
             {
                 if (game_board->lines[j] == 1)
-                    return 0;
+                    return false;
             }
+
             // Si no se encuentra más, es una victoria
-            return 1;
+            return true;
         }
     }
 
     // Si no se encontraron líneas con valor 1, no hay victoria
-    return 0;
+    return false;
 }
 
 void assign_mem(const int rows, board *game_board)
@@ -160,17 +165,32 @@ int main(void)
     int row, number;
     board game_board;
 
+    printf("========\n");
     printf("Nim game\n");
+    printf("========\n");
     board_config(&game_board);
+
+    game_board.turno_jugador = 1;
 
     while (1)
     {
+        // Imprimir el tablero y leer los datos
         print_board(&game_board);
         read_data(&row, &number);
-        if (take(row, number, &game_board) == EXIT_SUCCESS)
+
+        // Coger los elementos de la fila
+        if (take(row, number, &game_board) == true)
         {
-            // ...
+            // Verificar si el jugador actual ha ganado
+            if (is_win(&game_board))
+            {
+                printf("¡Ha ganado el jugador %d!\n", game_board.turno_jugador);
+                free_mem(&game_board);
+                return 0;
+            }
         }
+
+        game_board.turno_jugador = game_board.turno_jugador == 1 ? 2 : 1;
     }
 
     return 0;
