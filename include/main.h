@@ -3,7 +3,8 @@
 
 typedef struct 
 {
-    int lines[4];
+    int *lines;
+    int total_lines;
 } board;
 
 #endif
