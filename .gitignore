@@ -48,4 +48,5 @@ CMakeUserPresets.json
 # Directories
 build/
 debug/
+.vscode
 
