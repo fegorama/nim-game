@@ -1,3 +1,6 @@
+// Author: Fernando González Ruano (fegorsoft.com)
+// SPDX-License-Identifier: mit
+
 #ifndef MAIN_H
 #define MAIN_H
 

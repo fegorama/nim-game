@@ -1,3 +1,6 @@
+# Author: Fernando González Ruano (fegorsoft.com)
+# SPDX-License-Identifier: mit
+
 cmake_minimum_required(VERSION 3.25)
 
 project(nim-game VERSION 1.0)
